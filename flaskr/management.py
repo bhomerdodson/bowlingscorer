@@ -31,7 +31,7 @@ def get_games():
     
     try:
         for row in db.execute('SELECT * FROM games').fetchall():
-            print(row)
+            print(row['id'])
     except sqlite3.Error as error:
         print("Failed to insert new game. Error - {}".format(error))
     return '', 200
