@@ -71,7 +71,7 @@ def get_players():
         print("Failed to insert new game. Error - {}".format(error))
     return '', 200
 
-@bp.route('/delete_game', methods['DELETE'])
+@bp.route('/delete_game', methods=['DELETE'])
 def delete_game():
     game_id = request.form['game_id']
     db = get_db()
@@ -92,7 +92,7 @@ def delete_game():
         return error_string, 400
     return '', 200
 
-@bp.route('/delete_player', methods['DELETE'])
+@bp.route('/delete_player', methods=['DELETE'])
 def delete_game():
     player_id = request.form['player_id']
     db = get_db()
