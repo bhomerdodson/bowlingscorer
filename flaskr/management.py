@@ -22,4 +22,4 @@ def create_game():
             db.execute('INSERT INTO games (name) VALUES (?)', (name))
             db.commit()
     except sqlite3.Error as error:
-        error_message = 'Failed to insert new game' . error
+        error_message = 'Failed to insert new game. Error - {}' . str.format(error)
