@@ -93,7 +93,7 @@ def delete_game():
     return '', 200
 
 @bp.route('/delete_player', methods=['DELETE'])
-def delete_game():
+def delete_player():
     player_id = request.form['player_id']
     db = get_db()
     
