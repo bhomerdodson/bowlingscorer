@@ -48,10 +48,13 @@ def add_player():
         elif not game_id:
             return 'Did not give game id', 400
         else:
+            row = db.execute('SELECT count(*) as count FROM games WHERE id = ?', (game_id,)).fetchone()
+            if row['count'] < 1:
+                return 'Game does not exist', 400
             db.execute('INSERT INTO players (game_id, name) VALUES (?, ?)', (game_id, name))
             db.commit()
     except sqlite3.Error as error:
-        error_string = "Failed to perform insert. Error - {}".format(error)
+        error_string = "Failed to perform a query. Error - {}".format(error)
         return error_string, 400
     return '', 200
 
