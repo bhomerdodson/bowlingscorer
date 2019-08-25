@@ -47,7 +47,7 @@ def add_player():
             return 'Did not give name of player', 400
         elif not game_id:
             return 'Did not give game id', 400
-        elif:
+        else:
             db.execute('INSERT INTO players (game_id, name) VALUES (?, ?)', (game_id, name))
             db.commit()
     except sqlite3.Error as error:
