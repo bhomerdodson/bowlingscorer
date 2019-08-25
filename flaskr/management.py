@@ -29,7 +29,7 @@ def create_game():
 def get_games():
     try:
         for row in db.execute('SELECT * FROM games'):
-            print row
+            print(row)
     except sqlite3.Error as error:
         print("Failed to insert new game. Error - {}".format(error))
     return '', 200
