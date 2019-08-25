@@ -54,4 +54,15 @@ def add_player():
         error_string = "Failed to perform insert. Error - {}".format(error)
         return error_string, 400
     return '', 200
+
+@bp.route('/get_players', methods=['GET'])
+def get_players():
+    db = get_db()
+    
+    try:
+        for row in db.execute('SELECT * FROM players').fetchall():
+            print(row['id'] . row['game_id'] . row['name'])
+    except sqlite3.Error as error:
+        print("Failed to insert new game. Error - {}".format(error))
+    return '', 200
     
