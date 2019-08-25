@@ -70,4 +70,45 @@ def get_players():
     except sqlite3.Error as error:
         print("Failed to insert new game. Error - {}".format(error))
     return '', 200
+
+@bp.route('/delete_game', methods['DELETE'])
+def delete_game():
+    game_id = request.form['game_id']
+    db = get_db()
+    
+    try:
+        if not game_id:
+            return 'Did not give game id', 400
+        else:
+            row = db.execute('SELECT count(*) as count FROM games WHERE id = ?', (game_id,)).fetchone()
+            if row['count'] < 1:
+                return 'Game does not exist', 400
+            db.execute('DELETE FROM players WHERE game_id = ?', (game_id,))
+            db.execute('DELETE FROM frames WHERE game_id = ?', (game_id,))
+            db.execute('DELETE FROM games WHERE id = ?', (game_id,))
+            db.commit()
+    except sqlite3.Error as error:
+        error_string = "Failed to perform a query. Error - {}".format(error)
+        return error_string, 400
+    return '', 200
+
+@bp.route('/delete_player', methods['DELETE'])
+def delete_game():
+    player_id = request.form['player_id']
+    db = get_db()
+    
+    try:
+        if not player_id:
+            return 'Did not give game id', 400
+        else:
+            row = db.execute('SELECT count(*) as count FROM players WHERE id = ?', (player_id,)).fetchone()
+            if row['count'] < 1:
+                return 'Player does not exist', 400
+            db.execute('DELETE FROM players WHERE id = ?', (player_id,))
+            db.execute('DELETE FROM frames WHERE player_id = ?', (player_id,))
+            db.commit()
+    except sqlite3.Error as error:
+        error_string = "Failed to perform a query. Error - {}".format(error)
+        return error_string, 400
+    return '', 200
     
