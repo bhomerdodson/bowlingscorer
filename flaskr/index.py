@@ -21,7 +21,7 @@ def hello():
 #from . import management
 #app.register_blueprint(management.manage)
 
-@app.route('/create_game', methods=('POST'))
+@app.route('/create_game', methods=['POST'])
 def create_game():
     name = request.form['name']
     db = get_db()
