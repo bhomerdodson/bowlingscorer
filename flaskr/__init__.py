@@ -36,6 +36,6 @@ def create_app(test_config=None):
     app.register_blueprint(scoring.bp)
     
     from . import management
-    app.register_blueprint(manage)
+    app.register_blueprint(management.manage)
     
     return app
