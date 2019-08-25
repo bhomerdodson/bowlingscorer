@@ -61,7 +61,7 @@ def get_players():
     
     try:
         for row in db.execute('SELECT * FROM players').fetchall():
-            row_vals = [row['id'],row['game_id'],row['name']]
+            row_vals = [str(row['id']),str(row['game_id']),row['name']]
             print_vals = ", ".join(row_vals)
             print(print_vals)
     except sqlite3.Error as error:
