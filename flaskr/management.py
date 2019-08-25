@@ -35,3 +35,23 @@ def get_games():
     except sqlite3.Error as error:
         print("Failed to insert new game. Error - {}".format(error))
     return '', 200
+
+@bp.route('/add_player', methods=['POST'])
+def add_player():
+    name = request.form['name']
+    game_id = request.form['game_id']
+    db = get_db()
+    
+    try:
+        if not name:
+            return 'Did not give name of player', 400
+        elif not game_id:
+            return 'Did not give game id', 400
+        elif:
+            db.execute('INSERT INTO players (game_id, name) VALUES (?, ?)', (game_id, name))
+            db.commit()
+    except sqlite3.Error as error:
+        error_string = "Failed to perform insert. Error - {}".format(error)
+        return error_string, 400
+    return '', 200
+    
