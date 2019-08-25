@@ -22,7 +22,7 @@ CREATE TABLE frames (
     score_final INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (game_id) REFERENCES games (id),
     FOREIGN KEY (player_id) REFERENCES players (id)
-};
+);
 
 CREATE TABLE players (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
