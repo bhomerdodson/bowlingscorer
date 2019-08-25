@@ -61,8 +61,9 @@ def get_players():
     
     try:
         for row in db.execute('SELECT * FROM players').fetchall():
-            row_vals = row['id'] + row['game_id'] + row['name']
-            print(row_vals)
+            row_vals = [row['id'],row['game_id'],row['name']]
+            print_vals = ", ".join(row_vals)
+            print(print_vals)
     except sqlite3.Error as error:
         print("Failed to insert new game. Error - {}".format(error))
     return '', 200
