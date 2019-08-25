@@ -7,9 +7,9 @@ from flask import (
 
 from flaskr.db import get_db
 
-bp = Blueprint('management', __name__, url_prefix='/management')
+management = Blueprint('management', __name__, url_prefix='/management')
 
-@bp.route('/create_game', methods=('POST'))
+@management.route('/create_game', methods=('POST'))
 def create_game():
     name = request.form['name']
     db = get_db()
@@ -23,4 +23,3 @@ def create_game():
             db.commit()
     except sqlite3.Error as error:
         error_message = 'Failed to insert new game' . error
-    
