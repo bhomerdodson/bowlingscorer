@@ -7,7 +7,7 @@ from flask import (
 
 from flaskr.db import get_db
 
-manage = Blueprint('management', __name__, url_prefix='/management')
+manage = Blueprint('manage', __name__, url_prefix='/management')
 
 @manage.route('/create_game', methods=('POST'))
 def create_game():
