@@ -16,10 +16,10 @@ def create_game():
     
     try:
         if not name:
-            db.execute('INSERT INTO games (name) VALUES (?)', ('Game'))
+            db.execute('INSERT INTO games (name) VALUES (?)', ('Game',))
             db.commit()
         else:
-            db.execute('INSERT INTO games (name) VALUES (?)', (name))
+            db.execute('INSERT INTO games (name) VALUES (?)', (name,))
             db.commit()
     except sqlite3.Error as error:
         print("Failed to insert new game. Error - {}".format(error))
