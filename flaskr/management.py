@@ -27,6 +27,8 @@ def create_game():
 
 @bp.route('/get_games', methods=['GET'])
 def get_games():
+    db = get_db()
+    
     try:
         for row in db.execute('SELECT * FROM games'):
             print(row)
