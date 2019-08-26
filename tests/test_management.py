@@ -1,11 +1,12 @@
 import pytest
 import json
+import requests
 
 from ..flaskr.db import get_db
 
 def test_create_delete_game(client, manage):
-    result_json = manage.create_game()
-    result = json.loads(result_json)
+    response = request.get(manage.create_game())
+    result = json.loads(response.text)
     
     assert result['status'] == 200
     
