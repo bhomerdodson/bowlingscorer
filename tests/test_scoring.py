@@ -149,7 +149,6 @@ def test_update_frame(client, scoring, manage, app):
     
     response = scoring.update_frame(frame_id, 2, 5).data
     result = json.loads(response)
-    print(result)
     
     assert result['status'] == 200
     assert result['description'] == 'Updated frame successfully'
@@ -175,6 +174,7 @@ def test_update_frame(client, scoring, manage, app):
         row = get_db().execute('SELECT * FROM frames WHERE id = ?', (frame_id,)).fetchone()
         assert row is not None
         assert row['ball_one'] == 10
+        print(row['ball_two'])
         assert row['ball_two'] == 0
         assert row['ball_three'] == 0
         assert row['strike'] == 1
