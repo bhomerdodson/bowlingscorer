@@ -511,3 +511,63 @@ def test_get_score_failures(client, scoring, manage, app):
     assert result['status'] == 400
     assert result['description'] == 'Not a valid frame id'
 
+def test_get_frame_info(client, scoring, manage, app):
+    response = manage.create_game('Test').data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    game_id = result['game_id']
+    with app.app_context():
+        row = get_db().execute('SELECT count(*) as count FROM games WHERE id = ?', (game_id,)).fetchone()
+        assert row is not None
+        assert row['count'] == 1
+    
+    response = manage.add_player('Ben', game_id).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    player_id = result['player_id']
+    with app.app_context():
+        row = get_db().execute('SELECT count(*) as count FROM players WHERE id = ?', (player_id,)).fetchone()
+        assert row is not None
+        assert row['count'] == 1
+    
+    response = scoring.add_frame(player_id, game_id).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    frame_id = result['frameid']
+    with app.app_context():
+        row = get_db().execute('SELECT count(*) as count FROM frames WHERE id = ?', (frame_id,)).fetchone()
+        assert row is not None
+        assert row['count'] == 1
+    
+    response = scoring.update_frame(frame_id, 1, 5).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    assert result['description'] == 'Updated frame successfully'
+    
+    response = scoring.update_frame(frame_id, 2, 3).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    assert result['description'] == 'Updated frame successfully'
+    
+    response = scoring.get_frame_info(frame_id).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    assert result['game_id'] == game_id
+    assert result['player_id'] == player_id
+    assert result['frame_number'] == 1
+    assert result['ball_one'] == 5
+    assert result['ball_two'] == 3
+    assert result['ball_three'] == 0
+    assert result['strike'] == 0
+    assert result['spare'] == 0
+    assert result['total_game_score'] == 8
