@@ -23,7 +23,7 @@ def add_frame():
         else:
             row = db.execute('SELECT count(*) as count FROM frames WHERE player_id = ? AND game_id = ?', (player_id, game_id)).fetchone()
             frame_count = row['count']
-            if frame_count<9:
+            if frame_count>9:
                 return 'Cannot add any more frames', 400
             else:
                 frame_count = frame_count + 1
@@ -52,7 +52,7 @@ def calculate_score(frame_id):
             strike = row['strike']
             spare = row['spare']
             temp_game_score = 0
-            if frame_number<1:
+            if frame_number>1:
                 last_frame = frame_number - 1
                 temp_row = db.execute('SELECT id FROM frames WHERE player_id = ? AND game_id = ? AND frame_number = ?', (player_id, game_id, last_frame)).fetchone()
                 if temp_row is not None:
