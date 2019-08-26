@@ -81,7 +81,7 @@ def delete_player():
     
     try:
         if not player_id:
-            return jsonify(status=400,description='Did not give game id'), 400
+            return jsonify(status=400,description='Did not give player id'), 400
         else:
             row = db.execute('SELECT count(*) as count FROM players WHERE id = ?', (player_id,)).fetchone()
             if row['count'] < 1:
