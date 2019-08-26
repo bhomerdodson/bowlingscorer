@@ -163,8 +163,7 @@ def test_update_frame(client, scoring, manage, app):
         assert row['spare'] == 1
         assert row['total_game_score'] == 10
     
-    response = scoring.update_frame(frame_id, 2, 0).data
-    print(json.loads(response))
+    scoring.update_frame(frame_id, 2, 0).data
     response = scoring.update_frame(frame_id, 1, 10).data
     result = json.loads(response)
     
@@ -180,3 +179,107 @@ def test_update_frame(client, scoring, manage, app):
         assert row['strike'] == 1
         assert row['spare'] == 0
         assert row['total_game_score'] == 10
+
+def test_update_frame_failures(client, scoring, manage, app):
+    response = manage.create_game('Test').data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    game_id = result['game_id']
+    with app.app_context():
+        row = get_db().execute('SELECT count(*) as count FROM games WHERE id = ?', (game_id,)).fetchone()
+        assert row is not None
+        assert row['count'] == 1
+    
+    response = manage.add_player('Ben', game_id).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    player_id = result['player_id']
+    with app.app_context():
+        row = get_db().execute('SELECT count(*) as count FROM players WHERE id = ?', (player_id,)).fetchone()
+        assert row is not None
+        assert row['count'] == 1
+    
+    response = scoring.add_frame(player_id, game_id).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    frame_id = result['frameid']
+    with app.app_context():
+        row = get_db().execute('SELECT count(*) as count FROM frames WHERE id = ?', (frame_id,)).fetchone()
+        assert row is not None
+        assert row['count'] == 1
+    
+    response = scoring.update_frame('', 1, 4).data
+    result = json.loads(response)
+    
+    assert result['status'] == 400
+    assert result['description'] == 'Did not give a frame id'
+    
+    response = scoring.update_frame(frame_id, '', 4).data
+    result = json.loads(response)
+    
+    assert result['status'] == 400
+    assert result['description'] == 'Did not give a ball number'
+    
+    response = scoring.update_frame(frame_id, 0, 4).data
+    result = json.loads(response)
+    
+    assert result['status'] == 400
+    assert result['description'] == 'Did not give a valid ball number'
+    
+    response = scoring.update_frame(frame_id, 4, 4).data
+    result = json.loads(response)
+    
+    assert result['status'] == 400
+    assert result['description'] == 'Did not give a valid ball number'
+    
+    response = scoring.update_frame(frame_id, 1, -1).data
+    result = json.loads(response)
+    
+    assert result['status'] == 400
+    assert result['description'] == 'Did not give a valid pin count'
+    
+    response = scoring.update_frame(frame_id, 1, 11).data
+    result = json.loads(response)
+    
+    assert result['status'] == 400
+    assert result['description'] == 'Did not give a valid pin count'
+    
+    response = scoring.update_frame(frame_id, 1, 5).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    assert result['description'] == 'Updated frame successfully'
+    
+    with app.app_context():
+        row = get_db().execute('SELECT * FROM frames WHERE id = ?', (frame_id,)).fetchone()
+        assert row is not None
+        assert row['ball_one'] == 5
+        assert row['ball_two'] == 0
+        assert row['ball_three'] == 0
+        assert row['strike'] == 0
+        assert row['spare'] == 0
+        assert row['total_game_score'] == 5
+    
+    response = scoring.update_frame(frame_id, 2, 6).data
+    result = json.loads(response)
+    
+    assert result['status'] == 400
+    assert result['description'] == 'Too many pins added'
+    
+    response = scoring.update_frame(frame_id, 3, 6).data
+    result = json.loads(response)
+    
+    assert result['status'] == 400
+    assert result['description'] == 'Tried to update ball 3 on not the tenth frame'
+    
+    response = scoring.update_frame(5000, 1, 5).data
+    result = json.loads(response)
+    
+    assert result['status'] == 400
+    assert result['description'] == 'Invalid frame id'
