@@ -97,8 +97,6 @@ def update_frame():
     try:
         if not frame_id:
             return jsonify(status=400,description='Did not give a frame id'), 400
-        elif not ball_number:
-            return jsonify(status=400,description='Did not give a ball number'), 400
         elif ball_number>3 or ball_number<1:
             return jsonify(status=400,description='Did not give a valid ball number'), 400
         elif pin_count<0 or pin_count>10:
