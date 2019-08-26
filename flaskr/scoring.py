@@ -28,7 +28,7 @@ def add_frame():
             else:
                 frame_count = frame_count + 1
                 db.execute('INSERT INTO frames (player_id, game_id, frame_number) VALUES (?, ?, ?)', (player_id, game_id, frame_count))
-                db.commit
+                db.commit()
                 row = db.execute('SELECT id FROM frames WHERE player_id = ? AND game_id = ? AND frame_number = ?', (player_id, game_id, frame_count)).fetchone()
                 frame_id = row['id']
                 return jsonify(frameid=frame_id,status=200), 200
