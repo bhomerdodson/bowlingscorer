@@ -509,5 +509,5 @@ def test_get_score_failures(client, scoring, manage, app):
     result = json.loads(response)
     
     assert result['status'] == 400
-    assert result['description'] == 'Did not give a valid frame id'
+    assert result['description'] == 'Not a valid frame id'
 
