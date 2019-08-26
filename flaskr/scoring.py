@@ -160,7 +160,7 @@ def get_score():
 @bp.route('/get_frame_info', methods=['POST'])
 def get_frame_info():
     frame_id = request.form['frame_id']
-    dbg = get_db()
+    db = get_db()
     
     try:
         if not frame_id:
