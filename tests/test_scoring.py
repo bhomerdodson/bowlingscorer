@@ -3,6 +3,7 @@ import json
 
 from ..flaskr.db import get_db
 
+#Tests that the add_frame rest call works as expected on good input
 def test_add_frame(client, scoring, manage, app):
     response = manage.create_game('Test').data
     result = json.loads(response)
@@ -37,6 +38,7 @@ def test_add_frame(client, scoring, manage, app):
         assert row is not None
         assert row['count'] == 1
 
+#Tests that the add_frame rest call works as expected on bad input
 def test_add_frame_failures(client, scoring, manage, app):
     response = manage.create_game('Test').data
     result = json.loads(response)
@@ -81,6 +83,7 @@ def test_add_frame_failures(client, scoring, manage, app):
     assert result['status'] == 400
     assert result['description'] == 'Did not give game id'
 
+#Tests that the update_frame rest call works as expected on good input
 def test_update_frame(client, scoring, manage, app):
     response = manage.create_game('Test').data
     result = json.loads(response)
@@ -180,6 +183,7 @@ def test_update_frame(client, scoring, manage, app):
         assert row['spare'] == 0
         assert row['total_game_score'] == 10
 
+#Tests that the update_frame rest call works as expected for bad input
 def test_update_frame_failures(client, scoring, manage, app):
     response = manage.create_game('Test').data
     result = json.loads(response)
@@ -278,6 +282,7 @@ def test_update_frame_failures(client, scoring, manage, app):
     assert result['status'] == 400
     assert result['description'] == 'Invalid frame id'
 
+#Tests that a perfect game in bowling is scored correctly
 def test_perfect_game(client, scoring, manage, app):
     response = manage.create_game('Test').data
     result = json.loads(response)
@@ -336,6 +341,7 @@ def test_perfect_game(client, scoring, manage, app):
             assert row is not None
             assert row['total_game_score'] == 300
 
+#Tests that a spare in bowling is correctly scored
 def test_spare(client, scoring, manage, app):
     response = manage.create_game('Test').data
     result = json.loads(response)
@@ -401,6 +407,7 @@ def test_spare(client, scoring, manage, app):
         assert row is not None
         assert row['total_game_score'] == 15
 
+#Test that the get_score rest call works as expected on good input
 def test_get_score(client, scoring, manage, app):
     response = manage.create_game('Test').data
     result = json.loads(response)
@@ -453,6 +460,7 @@ def test_get_score(client, scoring, manage, app):
     assert result['status'] == 200
     assert result['game_score'] == 8
 
+#Tests that the get_score rest call works as expected on bad input
 def test_get_score_failures(client, scoring, manage, app):
     response = manage.create_game('Test').data
     result = json.loads(response)
@@ -511,6 +519,7 @@ def test_get_score_failures(client, scoring, manage, app):
     assert result['status'] == 400
     assert result['description'] == 'Not a valid frame id'
 
+#Tests that the get_frame_info rest call works as expected on good input
 def test_get_frame_info(client, scoring, manage, app):
     response = manage.create_game('Test').data
     result = json.loads(response)
@@ -572,6 +581,7 @@ def test_get_frame_info(client, scoring, manage, app):
     assert result['spare'] == 0
     assert result['total_game_score'] == 8
 
+#Tests that the get_frame_info rest call works as expected on bad input
 def test_get_frame_info_failures(client, scoring, manage, app):
     response = manage.create_game('Test').data
     result = json.loads(response)

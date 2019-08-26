@@ -9,6 +9,8 @@ from ..flaskr.db import get_db
 
 bp = Blueprint('management', __name__, url_prefix='/management')
 
+#Creates a new game of bowling
+#name - The name of the game
 @bp.route('/create_game', methods=['POST'])
 def create_game():
     name = request.form['name']
@@ -28,6 +30,9 @@ def create_game():
         return jsonify(status=500,description=error_string), 500
     return jsonify(status=500, description='Failed to do anything'), 500
 
+#Adds a new player to a game
+#name - The name of a player
+#game_id - The game to add the player to
 @bp.route('/add_player', methods=['POST'])
 def add_player():
     name = request.form['name']
@@ -52,6 +57,8 @@ def add_player():
         return jsonify(status=500,description=error_string), 500
     return jsonify(status=500,description='Failed to do anything'), 500
 
+#Deletes a game
+#game_id - The game to delete
 @bp.route('/delete_game', methods=['POST'])
 def delete_game():
     game_id = request.form['game_id']
@@ -74,6 +81,8 @@ def delete_game():
         return jsonify(status=500,description=error_string), 500
     return jsonify(status=500,description='Failed to do anything'), 500
 
+#Removes a player from a game
+#player_id - The player to remove
 @bp.route('/delete_player', methods=['POST'])
 def delete_player():
     player_id = request.form['player_id']

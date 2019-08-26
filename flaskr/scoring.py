@@ -9,6 +9,9 @@ from ..flaskr.db import get_db
 
 bp = Blueprint('scoring', __name__, url_prefix='/scoring')
 
+#Adds a frame associated with a player to a game
+#player_id - player the frame is associated with
+#game_id - game the frame is associated with
 @bp.route('/add_frame', methods=['POST'])
 def add_frame():
     player_id = request.form['player_id']
@@ -37,12 +40,15 @@ def add_frame():
         return jsonify(status=500,description=error_string), 500
     return jsonify(status=500,description='Failed to do anything'), 500
 
+#Calculates the total game score for the given frame
+#frame_id - the frame that is having its score calculated
 def calculate_score(frame_id):
     db = get_db()
     
     try:
         row = db.execute('SELECT * FROM frames WHERE id = ?', (frame_id,)).fetchone()
         if row is not None:
+            #Get the relevant information from the frame
             game_id = row['game_id']
             player_id = row['player_id']
             frame_number = row['frame_number']
@@ -51,7 +57,9 @@ def calculate_score(frame_id):
             ball_three = row['ball_three']
             strike = row['strike']
             spare = row['spare']
+            #Temporary variable to hold the game score as it is being calculated
             temp_game_score = 0
+            #Get the total game score from previous frames. This should only be done on frames 2-10
             if frame_number>1:
                 last_frame = frame_number - 1
                 temp_row = db.execute('SELECT id FROM frames WHERE player_id = ? AND game_id = ? AND frame_number = ?', (player_id, game_id, last_frame)).fetchone()
@@ -87,6 +95,10 @@ def calculate_score(frame_id):
         return 0
     return 0
 
+#Updates the values for the balls bowled in a frame
+#frame_id - The frame being updated
+#ball_number - The ball in the frame
+#pin_count - The number of pins that were knocked down for the given ball
 @bp.route('/update_frame', methods=['POST'])
 def update_frame():
     frame_id = request.form['frame_id']
@@ -135,6 +147,8 @@ def update_frame():
         return jsonify(status=500,description=error_string), 500
     return jsonify(status=200,description='Updated frame successfully'), 200
 
+#Gives the total game score for the given frame
+#frame_id - The frame to get the score from
 @bp.route('/get_score', methods=['POST'])
 def get_score():
     frame_id = request.form['frame_id']
@@ -154,6 +168,8 @@ def get_score():
         return jsonify(status=400,description=error_string), 400
     return jsonify(status=500,description='Failed to do anything'), 500
 
+#Gives all the information from a given frame
+#frame_id - The frame to get the information from
 @bp.route('/get_frame_info', methods=['POST'])
 def get_frame_info():
     frame_id = request.form['frame_id']
