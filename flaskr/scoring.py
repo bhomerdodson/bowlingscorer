@@ -64,17 +64,17 @@ def calculate_score(frame_id):
             extra_ball_two = 0
             if strike == 1:
                 strike_row = db.execute('SELECT ball_one, ball_two, strike FROM frames WHERE player_id = ? AND game_id = ? AND frame_number = ?', (player_id, game_id, extra_frame_one)).fetchone()
-                if strike_row not None:
+                if strike_row is not None:
                     extra_ball_one = strike_row['ball_one']
                     extra_ball_two = strike_row['ball_two']
                     extra_strike = strike_row['strike']
                     if extra_strike == 1:
                         strike_row = db.execute('SELECT ball_one FROM frames WHERE player_id = ? AND game_id = ? AND frame_number = ?', (player_id, game_id, extra_frame_two)).fetchone()
-                        if strike_row not None:
+                        if strike_row is not None:
                             extra_ball_two = strike_row['ball_one']
             elif spare == 1:
                 spare_row = db.execute('SELECT ball_one FROM frames WHERE player_id = ? AND game_id = ? AND frame_number = ?', (player_id, game_id, extra_frame_one)).fetchone()
-                if spare_row not None:
+                if spare_row is not None:
                     extra_ball_one = spare_row['ball_one']
             total_frame_score = total_frame_score + extra_ball_one + extra_ball_two
             total_game_score = temp_game_score + total_frame_score
@@ -106,7 +106,7 @@ def update_frame():
             return 'Did not give a valid pin count', 400
         else:
             row = db.execute('SELECT * FROM frames WHERE id = ?', (frame_id,)).fetchone()
-            if row not None:
+            if row is not None:
                 if ball_number == 3:
                     if row['frame_number'] == 10:
                         db.execute('UPDATE frames SET ball_three = ? WHERE id = ?', (pin_count, frame_id))
@@ -148,7 +148,7 @@ def get_score():
             return 'Did not give a frame id', 400
         else:
             row = db.execute('SELECT total_game_score FROM frames WHERE id = ?', (frame_id,)).fetchone()
-            if row not None:
+            if row is not None:
                 return row['total_game_score'], 200
             else:
                 return 'Not a valid frame id', 400
@@ -166,7 +166,7 @@ def get_frame_info():
             return 'Did not give a frame id', 400
         else:
             row = db.execute('SELECT * FROM frames WHERE id = ?', (frame_id,)).fetchone()
-            if row not None:
+            if row is not None:
                 return jsonify(status=200,game_id=row['game_id'], player_id=row['player_id'], frame_number=row['frame_number'], ball_one=row['ball_one'], ball_two=row['ball_two'], ball_three=row['ball_three'], strike=row['strike'], spare=row['spare'], total_game_score=row['total_game_score']), 200
     except sqlite3.Error as error:
         error_string = "Failed to perform a query. Error - {}".format(error)
