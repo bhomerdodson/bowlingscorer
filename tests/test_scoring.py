@@ -220,12 +220,6 @@ def test_update_frame_failures(client, scoring, manage, app):
     assert result['status'] == 400
     assert result['description'] == 'Did not give a frame id'
     
-    response = scoring.update_frame(frame_id, '', 4).data
-    result = json.loads(response)
-    
-    assert result['status'] == 400
-    assert result['description'] == 'Did not give a ball number'
-    
     response = scoring.update_frame(frame_id, 0, 4).data
     result = json.loads(response)
     
