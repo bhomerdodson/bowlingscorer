@@ -41,7 +41,7 @@ def calculate_score(frame_id):
     
     try:
         row = db.execute('SELECT * FROM frames WHERE frame_id = ?', (frame_id,)).fetchone()
-        if row not None:
+        if row is not None:
             game_id = row['game_id']
             player_id = row['player_id']
             frame_number = row['frame_number']
