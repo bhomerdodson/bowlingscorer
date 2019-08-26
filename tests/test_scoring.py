@@ -69,13 +69,13 @@ def test_add_frame_failures(client, scoring, manage, app):
     assert result['status'] == 409
     assert result['description'] == 'Cannot add any more frames'
     
-    response = manage.add_frame('', game_id).data
+    response = scoring.add_frame('', game_id).data
     result = json.loads(response)
     
     assert result['status'] == 400
     assert result['description'] == 'Did not give player id'
     
-    response = manage.add_frame(player_id, '').data
+    response = scoring.add_frame(player_id, '').data
     result = json.loads(response)
     
     assert result['status'] == 400
