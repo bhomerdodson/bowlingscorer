@@ -116,7 +116,7 @@ def update_frame():
                         return 'Tried to update ball 3 on not the tenth frame', 400
                 elif ball_number == 2:
                     frame_total = row['ball_one'] + pin_count
-                    if frame_total<10:
+                    if frame_total>10:
                         return 'Too many pins added', 400
                     elif frame_total == 10:
                         db.execute('UPDATE frames SET ball_two = ?, spare = ? WHERE id = ?', (pin_count, 1, frame_id))
