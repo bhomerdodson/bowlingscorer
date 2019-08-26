@@ -4,7 +4,7 @@ import json
 from ..flaskr.db import get_db
 
 def test_create_delete_game(client, manage):
-    result_json = manage.create_game()
+    result_json = manage.create_game()[0]
     result = json.loads(result_json)
     
     assert result['status'] == 200
