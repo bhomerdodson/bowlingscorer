@@ -331,8 +331,72 @@ def test_perfect_game(client, scoring, manage, app):
             
             assert result['status'] == 200
     
-    print(temp_frame_id)
     with app.app_context():
             row = get_db().execute('SELECT total_game_score FROM frames WHERE id = ?', (temp_frame_id,)).fetchone()
             assert row is not None
             assert row['total_game_score'] == 300
+
+def test_spare(client, scoring, manage, app):
+    response = manage.create_game('Test').data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    game_id = result['game_id']
+    with app.app_context():
+        row = get_db().execute('SELECT count(*) as count FROM games WHERE id = ?', (game_id,)).fetchone()
+        assert row is not None
+        assert row['count'] == 1
+    
+    response = manage.add_player('Ben', game_id).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    player_id = result['player_id']
+    with app.app_context():
+        row = get_db().execute('SELECT count(*) as count FROM players WHERE id = ?', (player_id,)).fetchone()
+        assert row is not None
+        assert row['count'] == 1
+    
+    response = scoring.add_frame(player_id, game_id).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    frame_id = result['frameid']
+    with app.app_context():
+        row = get_db().execute('SELECT count(*) as count FROM frames WHERE id = ?', (frame_id,)).fetchone()
+        assert row is not None
+        assert row['count'] == 1
+    
+    response = scoring.update_frame(frame_id, 1, 5).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    response = scoring.update_frame(frame_id, 2, 5).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    response = scoring.add_frame(player_id, game_id).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    second_frame_id = result['frameid']
+    with app.app_context():
+        row = get_db().execute('SELECT count(*) as count FROM frames WHERE id = ?', (second_frame_id,)).fetchone()
+        assert row is not None
+        assert row['count'] == 1
+    
+    response = scoring.update_frame(second_frame_id, 1, 5).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    with app.app_context():
+        row = get_db().execute('SELECT total_game_score FROM frames WHERE id = ?', (frame_id,)).fetchone()
+        assert row is not None
+        assert row['total_game_score'] == 15
