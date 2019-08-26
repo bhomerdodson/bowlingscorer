@@ -315,6 +315,7 @@ def test_perfect_game(client, scoring, manage, app):
             assert row is not None
             assert row['count'] == 1
     
+    print(temp_frame_id)
     with app.app_context():
             row = get_db().execute('SELECT total_game_score FROM frames WHERE id = ?', (temp_frame_id,)).fetchone()
             assert row is not None
