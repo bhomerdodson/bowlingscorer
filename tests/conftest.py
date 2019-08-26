@@ -59,7 +59,7 @@ class ScoringCalls(object):
         )
     
     def get_frame_info(self, frame_id):
-        return self._client_post(
+        return self._client.post(
             '/scoring/get_frame_info',
             data={'frame_id': frame_id}
         )
