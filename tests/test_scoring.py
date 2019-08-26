@@ -319,6 +319,17 @@ def test_perfect_game(client, scoring, manage, app):
         result = json.loads(response)
         
         assert result['status'] == 200
+        
+        if x == 9:
+            response = scoring.update_frame(frame_id, 2, 10).data
+            result = json.loads(response)
+            
+            assert result['status'] == 200
+            
+            response = scoring.update_frame(frame_id, 3, 10).data
+            result = json.loads(response)
+            
+            assert result['status'] == 200
     
     print(temp_frame_id)
     with app.app_context():
