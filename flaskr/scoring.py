@@ -90,8 +90,8 @@ def calculate_score(frame_id):
 @bp.route('/update_frame', methods=['POST'])
 def update_frame():
     frame_id = request.form['frame_id']
-    ball_number = (int)request.form['ball_number']
-    pin_count = request.form['pin_count']
+    ball_number = int(request.form['ball_number'])
+    pin_count = int(request.form['pin_count'])
     db = get_db();
     
     try:
