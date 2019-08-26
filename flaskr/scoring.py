@@ -91,7 +91,6 @@ def calculate_score(frame_id):
 def update_frame():
     frame_id = request.form['frame_id']
     ball_number = int(request.form['ball_number'])
-    str_pin_count = request.form['pin_count']
     pin_count = int(request.form['pin_count'])
     db = get_db();
     
@@ -100,8 +99,6 @@ def update_frame():
             return jsonify(status=400,description='Did not give a frame id'), 400
         elif not ball_number:
             return jsonify(status=400,description='Did not give a ball number'), 400
-        elif str_pin_count != '':
-            return jsonify(status=400,description='Did not give a pin count'), 400
         elif ball_number>3 or ball_number<1:
             return jsonify(status=400,description='Did not give a valid ball number'), 400
         elif pin_count<0 or pin_count>10:
