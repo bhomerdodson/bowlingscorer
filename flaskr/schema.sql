@@ -15,11 +15,10 @@ CREATE TABLE frames (
     frame_number INTEGER NOT NULL,
     ball_one INTEGER NOT NULL DEFAULT 0,
     ball_two INTEGER NOT NULL DEFAULT 0,
+    ball_three INTEGER NOT NULL DEFAULT 0,
     strike INTEGER NOT NULL DEFAULT 0,
     spare INTEGER NOT NULL DEFAULT 0,
-    total_frame_score INTEGER NOT NULL DEFAULT 0,
     total_game_score INTEGER NOT NULL DEFAULT 0,
-    score_final INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (game_id) REFERENCES games (id),
     FOREIGN KEY (player_id) REFERENCES players (id)
 );
