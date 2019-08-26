@@ -22,7 +22,7 @@ def create_game():
             db.execute('INSERT INTO games (name) VALUES (?)', (name,))
             db.commit()
         row = db.execute('SELECT max(id) as max FROM games').fetchone()
-        return jsonify(status=200,game_id=row['max']), 200
+        return jsonify(status=200,game_id=row['max'])
     except sqlite3.Error as error:
         error_string = "Failed to insert new game. Error - {}".format(error)
         return jsonify(status=500,description=error_string), 500
