@@ -1,7 +1,7 @@
 import pytest
 import json
 
-from flaskr.db import get_db
+from ..flaskr.db import get_db
 
 def test_create_delete_game(client, manage):
     result_json = manage.create_game()
