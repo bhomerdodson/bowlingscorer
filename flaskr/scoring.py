@@ -54,7 +54,7 @@ def calculate_score(frame_id):
             if frame_number > 1:
                 last_frame = frame_number - 1
                 temp_row = db.execute('SELECT id FROM frames WHERE player_id = ? AND game_id = ? AND frame_number = ?', (player_id, game_id, last_frame)).fetchone()
-                if temp_row not None:
+                if temp_row is not None:
                     last_frame_id = temp_row['id']
                     temp_game_score = calculate_score(last_frame_id);
             total_frame_score = ball_one + ball_two + ball_three
