@@ -4,7 +4,7 @@ import json
 from ..flaskr.db import get_db
 
 def test_create_delete_game(client, manage):
-    response = manage.create_game()
+    response = manage.create_game().data
     print(response);
     return;
     result = json.loads(response.text)
