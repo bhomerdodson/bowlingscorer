@@ -2,7 +2,7 @@ import functools
 import sqlite3
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify
 )
 
 from flaskr.db import get_db
@@ -21,20 +21,12 @@ def create_game():
         else:
             db.execute('INSERT INTO games (name) VALUES (?)', (name,))
             db.commit()
+        row = db.execute('SELECT max(id) as max FROM games').fetchone()
+        return jsonify(status=200,game_id=row['max']), 200
     except sqlite3.Error as error:
-        print("Failed to insert new game. Error - {}".format(error))
-    return '', 200
-
-@bp.route('/get_games', methods=['GET'])
-def get_games():
-    db = get_db()
-    
-    try:
-        for row in db.execute('SELECT * FROM games').fetchall():
-            print(row['id'])
-    except sqlite3.Error as error:
-        print("Failed to insert new game. Error - {}".format(error))
-    return '', 200
+        error_string = "Failed to insert new game. Error - {}".format(error)
+        return jsonify(status=500,description=error_string), 500
+    return jsonify(status=500, description='Failed to do anything'), 500
 
 @bp.route('/add_player', methods=['POST'])
 def add_player():
@@ -44,32 +36,21 @@ def add_player():
     
     try:
         if not name:
-            return 'Did not give name of player', 400
+            return jsonify(status=400,description='Did not give name of player'), 400
         elif not game_id:
-            return 'Did not give game id', 400
+            return jsonify(status=400,description='Did not give game id'), 400
         else:
             row = db.execute('SELECT count(*) as count FROM games WHERE id = ?', (game_id,)).fetchone()
             if row['count'] < 1:
-                return 'Game does not exist', 400
+                return jsonify(status=400,description='Game does not exist'), 400
             db.execute('INSERT INTO players (game_id, name) VALUES (?, ?)', (game_id, name))
             db.commit()
+            row = db.execute('SELECT id FROM players WHERE game_id = ? AND name = ?', (game_id, name)).fetchone()
+            return jsonify(status=200, player_id=row['id']), 200
     except sqlite3.Error as error:
         error_string = "Failed to perform a query. Error - {}".format(error)
-        return error_string, 400
-    return '', 200
-
-@bp.route('/get_players', methods=['GET'])
-def get_players():
-    db = get_db()
-    
-    try:
-        for row in db.execute('SELECT * FROM players').fetchall():
-            row_vals = [str(row['id']),str(row['game_id']),row['name']]
-            print_vals = ", ".join(row_vals)
-            print(print_vals)
-    except sqlite3.Error as error:
-        print("Failed to insert new game. Error - {}".format(error))
-    return '', 200
+        return jsonify(status=500,description=error_string), 500
+    return jsonify(status=500,description='Failed to do anything'), 500
 
 @bp.route('/delete_game', methods=['POST'])
 def delete_game():
@@ -78,19 +59,20 @@ def delete_game():
     
     try:
         if not game_id:
-            return 'Did not give game id', 400
+            return jsonify(status=400,description='Did not give game id'), 400
         else:
             row = db.execute('SELECT count(*) as count FROM games WHERE id = ?', (game_id,)).fetchone()
             if row['count'] < 1:
-                return 'Game does not exist', 400
+                return jsonify(status=400,description='Game does not exist'), 400
             db.execute('DELETE FROM players WHERE game_id = ?', (game_id,))
             db.execute('DELETE FROM frames WHERE game_id = ?', (game_id,))
             db.execute('DELETE FROM games WHERE id = ?', (game_id,))
             db.commit()
+            return jsonify(status=200,description='Successfully deleted game'),200
     except sqlite3.Error as error:
         error_string = "Failed to perform a query. Error - {}".format(error)
-        return error_string, 400
-    return '', 200
+        return jsonify(status=500,description=error_string), 500
+    return jsonify(status=500,description='Failed to do anything'), 500
 
 @bp.route('/delete_player', methods=['POST'])
 def delete_player():
@@ -99,16 +81,17 @@ def delete_player():
     
     try:
         if not player_id:
-            return 'Did not give game id', 400
+            return jsonify(status=400,description='Did not give game id'), 400
         else:
             row = db.execute('SELECT count(*) as count FROM players WHERE id = ?', (player_id,)).fetchone()
             if row['count'] < 1:
-                return 'Player does not exist', 400
+                return jsonify(status=400,description='Player does not exist'), 400
             db.execute('DELETE FROM players WHERE id = ?', (player_id,))
             db.execute('DELETE FROM frames WHERE player_id = ?', (player_id,))
             db.commit()
+            return jsonify(status=200,description='Successfully deleted player'),200
     except sqlite3.Error as error:
         error_string = "Failed to perform a query. Error - {}".format(error)
-        return error_string, 400
-    return '', 200
+        return jsonify(status=500,description=error_string), 500
+    return jsonify(status=500,description='Failed to do anything'), 500
     

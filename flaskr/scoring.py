@@ -17,14 +17,14 @@ def add_frame():
     
     try:
         if not player_id:
-            return 'Did not give player id', 400
+            return jsonify(status=400,description='Did not give player id'), 400
         elif not game_id:
-            return 'Did not give game id', 400
+            return jsonify(status=400,description='Did not give game id'), 400
         else:
             row = db.execute('SELECT count(*) as count FROM frames WHERE player_id = ? AND game_id = ?', (player_id, game_id)).fetchone()
             frame_count = row['count']
             if frame_count>9:
-                return 'Cannot add any more frames', 400
+                return jsonify(status=409,description='Cannot add any more frames'), 409
             else:
                 frame_count = frame_count + 1
                 db.execute('INSERT INTO frames (player_id, game_id, frame_number) VALUES (?, ?, ?)', (player_id, game_id, frame_count))
@@ -34,8 +34,8 @@ def add_frame():
                 return jsonify(frameid=frame_id,status=200), 200
     except sqlite3.Error as error:
         error_string = "Failed to perform a query. Error - {}".format(error)
-        return error_string, 400
-    return '', 400
+        return jsonify(status=500,description=error_string), 500
+    return jsonify(status=500,description='Failed to do anything'), 500
 
 def calculate_score(frame_id):
     db = get_db()
@@ -96,15 +96,15 @@ def update_frame():
     
     try:
         if not frame_id:
-            return 'Did not give a frame id', 400
+            return jsonify(status=400,description='Did not give a frame id'), 400
         elif not ball_number:
-            return 'Did not give a ball number', 400
+            return jsonify(status=400,description='Did not give a ball number'), 400
         elif not pin_count:
-            return 'Did not give a pin count', 400
+            return jsonify(status=400,description='Did not give a pin count'), 400
         elif ball_number>3 or ball_number<1:
-            return 'Did not give a valid ball number', 400
+            return jsonify(status=400,description='Did not give a valid ball number'), 400
         elif pin_count<0 or pin_count>10:
-            return 'Did not give a valid pin count', 400
+            return jsonify(status=400,description='Did not give a valid pin count'), 400
         else:
             row = db.execute('SELECT * FROM frames WHERE id = ?', (frame_id,)).fetchone()
             if row is not None:
@@ -113,11 +113,11 @@ def update_frame():
                         db.execute('UPDATE frames SET ball_three = ? WHERE id = ?', (pin_count, frame_id))
                         db.commit()
                     else:
-                        return 'Tried to update ball 3 on not the tenth frame', 400
+                        return jsonify(status=400,description='Tried to update ball 3 on not the tenth frame'), 400
                 elif ball_number == 2:
                     frame_total = row['ball_one'] + pin_count
                     if frame_total>10 and row['frame_number']<10:
-                        return 'Too many pins added', 400
+                        return jsonify(status=400,description='Too many pins added'), 400
                     elif frame_total == 10:
                         db.execute('UPDATE frames SET ball_two = ?, spare = ? WHERE id = ?', (pin_count, 1, frame_id))
                         db.commit()
@@ -133,11 +133,11 @@ def update_frame():
                         db.commit()
                 calculate_score(frame_id)
             else:
-                return 'Invalid frame id', 400
+                return jsonify(status=400,description='Invalid frame id'), 400
     except sqlite3.Error as error:
         error_string = "Failed to perform a query. Error - {}".format(error)
-        return error_string, 400
-    return '', 200
+        return jsonify(status=500,description=error_string), 500
+    return jsonify(status=200,description='Updated frame successfully'), 200
 
 @bp.route('/get_score', methods=['POST'])
 def get_score():
@@ -146,16 +146,17 @@ def get_score():
     
     try:
         if not frame_id:
-            return 'Did not give a frame id', 400
+            return jsonify(status=400,description='Did not give a frame id'), 400
         else:
             row = db.execute('SELECT total_game_score FROM frames WHERE id = ?', (frame_id,)).fetchone()
             if row is not None:
-                return row['total_game_score'], 200
+                return jsonify(status=200,game_score=row['total_game_score']), 200
             else:
-                return 'Not a valid frame id', 400
+                return jsonify(status=400,description='Not a valid frame id'), 400
     except sqlite3.Error as error:
         error_string = "Failed to perform a query. Error - {}".format(error)
-        return error_string, 400
+        return jsonify(status=400,description=error_string), 400
+    return jsonify(status=500,description='Failed to do anything'), 500
 
 @bp.route('/get_frame_info', methods=['POST'])
 def get_frame_info():
@@ -165,7 +166,7 @@ def get_frame_info():
     
     try:
         if not frame_id:
-            return 'Did not give a frame id', 400
+            return jsonify(status=400,description='Did not give a frame id'), 400
         else:
             row = db.execute('SELECT * FROM frames WHERE id = ?', (frame_id,)).fetchone()
             if row is not None:
@@ -173,4 +174,4 @@ def get_frame_info():
     except sqlite3.Error as error:
         error_string = "Failed to perform a query. Error - {}".format(error)
         return error_string, 400
-    return 'Did not give a valid frame id', 400
+    return jsonify(status=400,description='Did not give a valid frame id'), 400
