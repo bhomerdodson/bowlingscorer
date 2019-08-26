@@ -129,7 +129,7 @@ def update_frame():
                         db.execute('UPDATE frames SET ball_one = ?, strike = ?, spare = ? WHERE id = ?', (pin_count, 1, 0, frame_id))
                         db.commit()
                     else:
-                        db.execute('UPDATE frames SET ball_one = ?, strike = ?, spare = ? WHERE id = ?', (pin_count, frame_id))
+                        db.execute('UPDATE frames SET ball_one = ?, strike = ? WHERE id = ?', (pin_count, 0, frame_id))
                         db.commit()
                 calculate_score(frame_id)
             else:
