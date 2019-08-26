@@ -277,3 +277,43 @@ def test_update_frame_failures(client, scoring, manage, app):
     
     assert result['status'] == 400
     assert result['description'] == 'Invalid frame id'
+
+def test_perfect_game(client, scoring, manage, app):
+    response = manage.create_game('Test').data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    game_id = result['game_id']
+    with app.app_context():
+        row = get_db().execute('SELECT count(*) as count FROM games WHERE id = ?', (game_id,)).fetchone()
+        assert row is not None
+        assert row['count'] == 1
+    
+    response = manage.add_player('Ben', game_id).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    player_id = result['player_id']
+    with app.app_context():
+        row = get_db().execute('SELECT count(*) as count FROM players WHERE id = ?', (player_id,)).fetchone()
+        assert row is not None
+        assert row['count'] == 1
+    
+    for x in range(10):
+        response = scoring.add_frame(player_id, game_id).data
+        result = json.loads(response)
+        
+        assert result['status'] == 200
+        
+        frame_id = result['frameid']
+        with app.app_context():
+            row = get_db().execute('SELECT count(*) as count FROM frames WHERE id = ?', (frame_id,)).fetchone()
+            assert row is not None
+            assert row['count'] == 1
+    
+    with app.app_context():
+            row = get_db().execute('SELECT total_game_score FROM frames WHERE id = ?', (frame_id,)).fetchone()
+            assert row is not None
+            assert row['total_game_score'] == 300
