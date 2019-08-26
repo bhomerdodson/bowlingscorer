@@ -156,7 +156,7 @@ def get_score():
         error_string = "Failed to perform a query. Error - {}".format(error)
         return error_string, 400
 
-@bp.route('/get_frame_info', methods['GET'])
+@bp.route('/get_frame_info', methods=['GET'])
 def get_frame_info():
     frame_id = request.form['frame_id']
     dbg = get_db()
