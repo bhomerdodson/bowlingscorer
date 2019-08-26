@@ -149,6 +149,7 @@ def test_update_frame(client, scoring, manage, app):
     
     response = scoring.update_frame(frame_id, 2, 5).data
     result = json.loads(response)
+    print(result)
     
     assert result['status'] == 200
     assert result['description'] == 'Updated frame successfully'
