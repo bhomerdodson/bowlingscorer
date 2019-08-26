@@ -4,7 +4,7 @@ import json
 from ..flaskr.db import get_db
 
 def test_create_delete_game(client, manage, app):
-    response = manage.create_game().data
+    response = manage.create_game('Test').data
     result = json.loads(response)
     
     assert result['status'] == 200
@@ -26,7 +26,7 @@ def test_create_delete_game(client, manage, app):
         assert row['count'] == 0
 
 def test_create_delete_player(client, manage, app):
-    response = manage.create_game().data
+    response = manage.create_game('Test').data
     result = json.loads(response)
     
     assert result['status'] == 200
@@ -59,7 +59,7 @@ def test_create_delete_player(client, manage, app):
         assert row['count'] == 0
 
 def test_add_player_failures(client, manage):
-    response = manage.create_game().data
+    response = manage.create_game('Test').data
     result = json.loads(response)
     
     assert result['status'] == 200
