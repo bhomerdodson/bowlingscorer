@@ -89,7 +89,7 @@ class ManagementCalls(object):
     def delete_player(self, player_id='1'):
         return self._client.post(
             '/management/delete_player',
-            data={'player_id', player_id}
+            data={'player_id': player_id}
         )
 
 @pytest.fixture
