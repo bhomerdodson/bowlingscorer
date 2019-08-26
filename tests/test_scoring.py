@@ -301,6 +301,7 @@ def test_perfect_game(client, scoring, manage, app):
         assert row is not None
         assert row['count'] == 1
     
+    temp_frame_id = 0
     for x in range(10):
         response = scoring.add_frame(player_id, game_id).data
         result = json.loads(response)
@@ -308,12 +309,13 @@ def test_perfect_game(client, scoring, manage, app):
         assert result['status'] == 200
         
         frame_id = result['frameid']
+        temp_frame_id = result['frameid']
         with app.app_context():
             row = get_db().execute('SELECT count(*) as count FROM frames WHERE id = ?', (frame_id,)).fetchone()
             assert row is not None
             assert row['count'] == 1
     
     with app.app_context():
-            row = get_db().execute('SELECT total_game_score FROM frames WHERE id = ?', (frame_id,)).fetchone()
+            row = get_db().execute('SELECT total_game_score FROM frames WHERE id = ?', (temp_frame_id,)).fetchone()
             assert row is not None
             assert row['total_game_score'] == 300
