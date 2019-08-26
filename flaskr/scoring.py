@@ -79,7 +79,7 @@ def calculate_score(frame_id):
                     extra_ball_one = spare_row['ball_one']
             total_frame_score = total_frame_score + extra_ball_one + extra_ball_two
             total_game_score = temp_game_score + total_frame_score
-            db.execute('UPDATE frames SET total_game_score = ? WHERE frame_id = ?', (total_game_score, frame_id))
+            db.execute('UPDATE frames SET total_game_score = ? WHERE id = ?', (total_game_score, frame_id))
             db.commit()
             return total_game_score
     except sqlite3.Error as error:
