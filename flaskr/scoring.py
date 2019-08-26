@@ -2,7 +2,7 @@ import functools
 import sqlite3
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify
 )
 
 from flaskr.db import get_db
