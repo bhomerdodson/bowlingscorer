@@ -119,17 +119,17 @@ def update_frame():
                     if frame_total>10 and row['frame_number']<10:
                         return jsonify(status=400,description='Too many pins added'), 400
                     elif frame_total == 10:
-                        db.execute('UPDATE frames SET ball_two = ?, spare = ? WHERE id = ?', (pin_count, 1, frame_id))
+                        db.execute('UPDATE frames SET ball_two = ?, spare = ?, stike = ? WHERE id = ?', (pin_count, 1, 0, frame_id))
                         db.commit()
                     else:
-                        db.execute('UPDATE frames SET ball_two = ? WHERE id = ?', (pin_count, frame_id))
+                        db.execute('UPDATE frames SET ball_two = ?, strike = ?, spare = ? WHERE id = ?', (pin_count, 0, 0, frame_id))
                         db.commit()
                 else:
                     if pin_count == 10:
-                        db.execute('UPDATE frames SET ball_one = ?, strike = ? WHERE id = ?', (pin_count, 1, frame_id))
+                        db.execute('UPDATE frames SET ball_one = ?, strike = ?, spare = ? WHERE id = ?', (pin_count, 1, 0, frame_id))
                         db.commit()
                     else:
-                        db.execute('UPDATE frames SET ball_one = ? WHERE id = ?', (pin_count, frame_id))
+                        db.execute('UPDATE frames SET ball_one = ?, strike = ?, spare = ? WHERE id = ?', (pin_count, frame_id))
                         db.commit()
                 calculate_score(frame_id)
             else:
