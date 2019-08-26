@@ -167,9 +167,7 @@ def get_frame_info():
         if not frame_id:
             return 'Did not give a frame id', 400
         else:
-            #row = db.execute('SELECT * FROM frames WHERE id = ?', (frame_id,)).fetchone()
-            row = db.execute('SELECT * FROM frames').fetchone()
-            print(row)
+            row = db.execute('SELECT * FROM frames WHERE id = ?', (frame_id,)).fetchone()
             if row is not None:
                 return jsonify(status=200,game_id=row['game_id'], player_id=row['player_id'], frame_number=row['frame_number'], ball_one=row['ball_one'], ball_two=row['ball_two'], ball_three=row['ball_three'], strike=row['strike'], spare=row['spare'], total_game_score=row['total_game_score']), 200
     except sqlite3.Error as error:
