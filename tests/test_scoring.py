@@ -130,3 +130,52 @@ def test_update_frame(client, scoring, manage, app):
         assert row['strike'] == 0
         assert row['spare'] == 0
         assert row['total_game_score'] == 5
+    
+    response = scoring.update_frame(frame_id, 2, 3).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    assert result['description'] == 'Updated frame successfully'
+    
+    with app.app_context():
+        row = get_db().execute('SELECT * FROM frames WHERE id = ?', (frame_id,)).fetchone()
+        assert row is not None
+        assert row['ball_one'] == 5
+        assert row['ball_two'] == 3
+        assert row['ball_three'] == 0
+        assert row['strike'] == 0
+        assert row['spare'] == 0
+        assert row['total_game_score'] == 8
+    
+    response = scoring.update_frame(frame_id, 2, 5).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    assert result['description'] == 'Updated frame successfully'
+    
+    with app.app_context():
+        row = get_db().execute('SELECT * FROM frames WHERE id = ?', (frame_id,)).fetchone()
+        assert row is not None
+        assert row['ball_one'] == 5
+        assert row['ball_two'] == 5
+        assert row['ball_three'] == 0
+        assert row['strike'] == 0
+        assert row['spare'] == 1
+        assert row['total_game_score'] == 10
+    
+    scoring.update_frame(frame_id, 2, 0)
+    response = scoring.update_frame(frame_id, 1, 10).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    assert result['description'] == 'Updated frame successfully'
+    
+    with app.app_context():
+        row = get_db().execute('SELECT * FROM frames WHERE id = ?', (frame_id,)).fetchone()
+        assert row is not None
+        assert row['ball_one'] == 10
+        assert row['ball_two'] == 0
+        assert row['ball_three'] == 0
+        assert row['strike'] == 1
+        assert row['spare'] == 0
+        assert row['total_game_score'] == 10
