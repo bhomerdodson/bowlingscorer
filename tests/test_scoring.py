@@ -447,7 +447,7 @@ def test_get_score(client, scoring, manage, app):
     assert result['status'] == 200
     assert result['description'] == 'Updated frame successfully'
     
-    response = scoring.get_score(frame_id)
+    response = scoring.get_score(frame_id).data
     result = json.loads(response)
     
     assert result['status'] == 200
