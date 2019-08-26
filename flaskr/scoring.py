@@ -160,6 +160,7 @@ def get_score():
 @bp.route('/get_frame_info', methods=['POST'])
 def get_frame_info():
     frame_id = request.form['frame_id']
+    print(frame_id)
     db = get_db()
     
     try:
@@ -167,7 +168,6 @@ def get_frame_info():
             return 'Did not give a frame id', 400
         else:
             row = db.execute('SELECT * FROM frames WHERE id = ?', (frame_id,)).fetchone()
-            print(row[game_id])
             if row is not None:
                 return jsonify(status=200,game_id=row['game_id'], player_id=row['player_id'], frame_number=row['frame_number'], ball_one=row['ball_one'], ball_two=row['ball_two'], ball_three=row['ball_three'], strike=row['strike'], spare=row['spare'], total_game_score=row['total_game_score']), 200
     except sqlite3.Error as error:
