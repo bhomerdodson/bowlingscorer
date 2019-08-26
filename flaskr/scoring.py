@@ -30,7 +30,7 @@ def add_frame():
                 db.commit
                 row = db.execute('SELECT id FROM frames WHERE player_id = ? AND game_id = ? AND frame_number = ?', (player_id, game_id, frame_count)).fetchone()
                 frame_id = row['id']
-                return frame_id, 200
+                return jsonify(frameid=frame_id,status=200), 200
     except sqlite3.Error as error:
         error_string = "Failed to perform a query. Error - {}".format(error)
         return error_string, 400
