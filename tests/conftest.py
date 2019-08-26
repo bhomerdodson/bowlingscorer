@@ -40,25 +40,25 @@ class ScoringCalls(object):
     def __init__(self, client):
         self._client = client
     
-    def add_frame(self, player_id=1, game_id=1):
+    def add_frame(self, player_id, game_id):
         return self._client.post(
             '/scoring/add_frame',
             data={'player_id': player_id, 'game_id': game_id}
         )
     
-    def update_frame(self, frame_id=1, ball_number=1, pin_count=0):
+    def update_frame(self, frame_id, ball_number, pin_count):
         return self._client.post(
             '/scoring/update_frame',
             data={'frame_id': frame_id, 'ball_number': ball_number, 'pin_count': pin_count}
         )
     
-    def get_score(self, frame_id=1):
+    def get_score(self, frame_id):
         return self._client.post(
             '/scoring/get_score',
             data={'frame_id': frame_id}
         )
     
-    def get_frame_info(self, frame_id=1):
+    def get_frame_info(self, frame_id):
         return self._client_post(
             '/scoring/get_frame_info',
             data={'frame_id': frame_id}
@@ -68,25 +68,25 @@ class ManagementCalls(object):
     def __init__(self, client):
         self._client = client
     
-    def create_game(self, name=''):
+    def create_game(self, name):
         return self._client.post(
             '/management/create_game',
             data={'name': name}
         )
     
-    def add_player(self, name='Test', game_id='1'):
+    def add_player(self, name, game_id):
         return self._client.post(
             '/management/add_player',
             data={'name': name, 'game_id': game_id}
         )
     
-    def delete_game(self, game_id='1'):
+    def delete_game(self, game_id):
         return self._client.post(
             '/management/delete_game',
             data={'game_id': game_id}
         )
     
-    def delete_player(self, player_id='1'):
+    def delete_player(self, player_id):
         return self._client.post(
             '/management/delete_player',
             data={'player_id': player_id}
