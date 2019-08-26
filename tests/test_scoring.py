@@ -314,6 +314,11 @@ def test_perfect_game(client, scoring, manage, app):
             row = get_db().execute('SELECT count(*) as count FROM frames WHERE id = ?', (frame_id,)).fetchone()
             assert row is not None
             assert row['count'] == 1
+        
+        response = scoring.update_frame(frame_id, 1, 10).data
+        result = json.loads(response)
+        
+        assert result['status'] == 200
     
     print(temp_frame_id)
     with app.app_context():
