@@ -571,3 +571,43 @@ def test_get_frame_info(client, scoring, manage, app):
     assert result['strike'] == 0
     assert result['spare'] == 0
     assert result['total_game_score'] == 8
+
+def test_get_frame_info_failures(client, scoring, manage, app):
+    response = manage.create_game('Test').data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    game_id = result['game_id']
+    with app.app_context():
+        row = get_db().execute('SELECT count(*) as count FROM games WHERE id = ?', (game_id,)).fetchone()
+        assert row is not None
+        assert row['count'] == 1
+    
+    response = manage.add_player('Ben', game_id).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    player_id = result['player_id']
+    with app.app_context():
+        row = get_db().execute('SELECT count(*) as count FROM players WHERE id = ?', (player_id,)).fetchone()
+        assert row is not None
+        assert row['count'] == 1
+    
+    response = scoring.add_frame(player_id, game_id).data
+    result = json.loads(response)
+    
+    assert result['status'] == 200
+    
+    response = scoring.get_frame_info('').data
+    result = json.loads(response)
+    
+    assert result['status'] == 400
+    assert result['description'] == 'Did not give a frame id'
+    
+    response = scoring.get_frame_info(5000).data
+    result = json.loads(response)
+    
+    assert result['status'] == 400
+    assert result['description'] == 'Did not give a valid frame id'
