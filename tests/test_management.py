@@ -101,3 +101,19 @@ def test_add_player_failures(client, manage, app):
     
     assert result['status'] == 400
     assert result['description'] == 'Game does not exist'
+
+def test_delete_game_failures(client, manage, app):
+    
+    response = manage.delete_game('').data
+    
+    result = json.loads(response)
+    
+    assert result['status'] == 400
+    assert result['description'] == 'Did not give game id'
+    
+    response = manage.delete_game(5000).data
+    
+    result = json.loads(response)
+    
+    assert result['status'] == 400
+    assert result['description'] == 'Game does not exist'
