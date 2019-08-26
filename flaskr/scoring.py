@@ -172,3 +172,4 @@ def get_frame_info():
     except sqlite3.Error as error:
         error_string = "Failed to perform a query. Error - {}".format(error)
         return error_string, 400
+    return 'Did not give a valid frame id', 400
